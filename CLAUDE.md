@@ -64,7 +64,7 @@ npx supabase gen types typescript --linked > lib/database.types.ts
 ## Tiến độ (SPEC mục 15)
 - [x] Bước 0 – Khởi tạo dự án, GitHub, Supabase, Vercel
 - [x] Bước 1 – Đăng nhập, người dùng, vai trò, nhóm, kênh (còn thiếu: quản lý phiên/đăng xuất từ xa, để sau)
-- [ ] Bước 2 – Khách hàng, lead, chuẩn hoá, nhập tay, import Excel
+- [x] Bước 2 – Khách hàng, lead, chuẩn hoá, nhập tay, import Excel (chưa có chống trùng — để Bước 4)
 - [ ] Bước 3 – RLS, che thông tin, audit log
 - [ ] Bước 4 – Chống trùng, hợp nhất/tách
 - [ ] Bước 5 – Lịch làm việc, chia lead
