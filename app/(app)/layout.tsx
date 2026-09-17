@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { redirect } from "next/navigation";
 
 import { createClient } from "@/lib/supabase/server";
@@ -29,6 +30,11 @@ export default async function AppLayout({
       <header className="flex items-center justify-between border-b px-4 py-3">
         <span className="font-semibold">Sale CRM</span>
         <div className="flex items-center gap-3 text-sm">
+          {profile?.role === "admin" && (
+            <Link href="/admin/users" className="hover:underline">
+              Quản trị
+            </Link>
+          )}
           <span>
             {profile?.full_name ?? user.email} · {profile?.role ?? ""}
           </span>
