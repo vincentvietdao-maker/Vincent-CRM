@@ -39,6 +39,252 @@ export type Database = {
   }
   public: {
     Tables: {
+      companies: {
+        Row: {
+          address: string | null
+          created_at: string
+          created_by: string
+          deleted_at: string | null
+          id: string
+          name: string
+          owner_id: string | null
+          province: string | null
+          tax_code: string | null
+          tax_code_normalized: string | null
+          updated_at: string
+        }
+        Insert: {
+          address?: string | null
+          created_at?: string
+          created_by?: string
+          deleted_at?: string | null
+          id?: string
+          name: string
+          owner_id?: string | null
+          province?: string | null
+          tax_code?: string | null
+          tax_code_normalized?: string | null
+          updated_at?: string
+        }
+        Update: {
+          address?: string | null
+          created_at?: string
+          created_by?: string
+          deleted_at?: string | null
+          id?: string
+          name?: string
+          owner_id?: string | null
+          province?: string | null
+          tax_code?: string | null
+          tax_code_normalized?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "companies_created_by_fkey"
+            columns: ["created_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "companies_owner_id_fkey"
+            columns: ["owner_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      contacts: {
+        Row: {
+          company_id: string | null
+          created_at: string
+          created_by: string
+          deleted_at: string | null
+          email: string | null
+          email_normalized: string | null
+          full_name: string
+          id: string
+          owner_id: string | null
+          phone: string | null
+          phone_normalized: string | null
+          updated_at: string
+        }
+        Insert: {
+          company_id?: string | null
+          created_at?: string
+          created_by?: string
+          deleted_at?: string | null
+          email?: string | null
+          email_normalized?: string | null
+          full_name: string
+          id?: string
+          owner_id?: string | null
+          phone?: string | null
+          phone_normalized?: string | null
+          updated_at?: string
+        }
+        Update: {
+          company_id?: string | null
+          created_at?: string
+          created_by?: string
+          deleted_at?: string | null
+          email?: string | null
+          email_normalized?: string | null
+          full_name?: string
+          id?: string
+          owner_id?: string | null
+          phone?: string | null
+          phone_normalized?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "contacts_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "contacts_created_by_fkey"
+            columns: ["created_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "contacts_owner_id_fkey"
+            columns: ["owner_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      lead_submissions: {
+        Row: {
+          created_at: string
+          created_by: string
+          id: string
+          lead_id: string
+          raw_data: Json
+          source: string
+        }
+        Insert: {
+          created_at?: string
+          created_by?: string
+          id?: string
+          lead_id: string
+          raw_data: Json
+          source: string
+        }
+        Update: {
+          created_at?: string
+          created_by?: string
+          id?: string
+          lead_id?: string
+          raw_data?: Json
+          source?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "lead_submissions_created_by_fkey"
+            columns: ["created_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "lead_submissions_lead_id_fkey"
+            columns: ["lead_id"]
+            isOneToOne: false
+            referencedRelation: "leads"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      leads: {
+        Row: {
+          company_id: string | null
+          contact_id: string
+          created_at: string
+          created_by: string
+          danh_gia: string
+          deleted_at: string | null
+          id: string
+          kenh: string
+          note: string | null
+          owner_id: string | null
+          product_interest: string | null
+          source: string
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          company_id?: string | null
+          contact_id: string
+          created_at?: string
+          created_by?: string
+          danh_gia?: string
+          deleted_at?: string | null
+          id?: string
+          kenh: string
+          note?: string | null
+          owner_id?: string | null
+          product_interest?: string | null
+          source: string
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          company_id?: string | null
+          contact_id?: string
+          created_at?: string
+          created_by?: string
+          danh_gia?: string
+          deleted_at?: string | null
+          id?: string
+          kenh?: string
+          note?: string | null
+          owner_id?: string | null
+          product_interest?: string | null
+          source?: string
+          status?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "leads_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "leads_contact_id_fkey"
+            columns: ["contact_id"]
+            isOneToOne: false
+            referencedRelation: "contacts"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "leads_created_by_fkey"
+            columns: ["created_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "leads_owner_id_fkey"
+            columns: ["owner_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       login_logs: {
         Row: {
           created_at: string
@@ -179,6 +425,10 @@ export type Database = {
       }
       is_admin: { Args: never; Returns: boolean }
       is_admin_or_manager: { Args: never; Returns: boolean }
+      normalize_email: { Args: { p_email: string }; Returns: string }
+      normalize_phone_vn: { Args: { p_phone: string }; Returns: string }
+      normalize_tax_code: { Args: { p_tax_code: string }; Returns: string }
+      shares_team_with: { Args: { target_id: string }; Returns: boolean }
     }
     Enums: {
       user_role: "admin" | "quan_ly" | "truong_nhom" | "sale" | "marketing"
