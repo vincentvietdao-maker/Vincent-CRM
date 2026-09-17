@@ -255,6 +255,9 @@ export type Database = {
           kenh: string
           note: string | null
           owner_id: string | null
+          possible_duplicate_company_id: string | null
+          possible_duplicate_contact_id: string | null
+          possible_duplicate_reason: string | null
           product_interest: string | null
           source: string
           status: string
@@ -271,6 +274,9 @@ export type Database = {
           kenh: string
           note?: string | null
           owner_id?: string | null
+          possible_duplicate_company_id?: string | null
+          possible_duplicate_contact_id?: string | null
+          possible_duplicate_reason?: string | null
           product_interest?: string | null
           source: string
           status?: string
@@ -287,6 +293,9 @@ export type Database = {
           kenh?: string
           note?: string | null
           owner_id?: string | null
+          possible_duplicate_company_id?: string | null
+          possible_duplicate_contact_id?: string | null
+          possible_duplicate_reason?: string | null
           product_interest?: string | null
           source?: string
           status?: string
@@ -319,6 +328,20 @@ export type Database = {
             columns: ["owner_id"]
             isOneToOne: false
             referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "leads_possible_duplicate_company_id_fkey"
+            columns: ["possible_duplicate_company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "leads_possible_duplicate_contact_id_fkey"
+            columns: ["possible_duplicate_contact_id"]
+            isOneToOne: false
+            referencedRelation: "contacts"
             referencedColumns: ["id"]
           },
         ]
@@ -498,6 +521,7 @@ export type Database = {
           owner_id: string
           product_interest: string
           source: string
+          status: string
         }[]
       }
       is_admin: { Args: never; Returns: boolean }
@@ -516,10 +540,12 @@ export type Database = {
           kenh: string
           owner_id: string
           source: string
+          status: string
         }[]
       }
       mask_email: { Args: { p_email: string }; Returns: string }
       mask_phone: { Args: { p_phone: string }; Returns: string }
+      normalize_company_name: { Args: { p_name: string }; Returns: string }
       normalize_email: { Args: { p_email: string }; Returns: string }
       normalize_phone_vn: { Args: { p_phone: string }; Returns: string }
       normalize_tax_code: { Args: { p_tax_code: string }; Returns: string }
@@ -531,6 +557,9 @@ export type Database = {
         }[]
       }
       shares_team_with: { Args: { target_id: string }; Returns: boolean }
+      show_limit: { Args: never; Returns: number }
+      show_trgm: { Args: { "": string }; Returns: string[] }
+      unaccent: { Args: { "": string }; Returns: string }
       write_audit_log: {
         Args: {
           p_action: string

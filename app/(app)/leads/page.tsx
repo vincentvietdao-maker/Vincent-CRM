@@ -44,6 +44,7 @@ export default async function LeadsPage() {
             <TableHead>Công ty</TableHead>
             <TableHead>Kênh</TableHead>
             <TableHead>Đánh giá</TableHead>
+            <TableHead>Trạng thái</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
@@ -64,11 +65,18 @@ export default async function LeadsPage() {
                   {danhGiaLabels[lead.danh_gia as keyof typeof danhGiaLabels]}
                 </Badge>
               </TableCell>
+              <TableCell>
+                {lead.status === "cho_xac_nhan_trung" ? (
+                  <Badge variant="destructive">Chờ xác nhận trùng</Badge>
+                ) : (
+                  "Mới"
+                )}
+              </TableCell>
             </TableRow>
           ))}
           {leads?.length === 0 && (
             <TableRow>
-              <TableCell colSpan={5} className="text-center text-muted-foreground">
+              <TableCell colSpan={6} className="text-center text-muted-foreground">
                 Chưa có lead nào
               </TableCell>
             </TableRow>

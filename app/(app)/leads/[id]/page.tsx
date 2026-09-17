@@ -55,6 +55,9 @@ export default async function LeadDetailPage({
             <Badge variant="secondary">
               {danhGiaLabels[lead.danh_gia as keyof typeof danhGiaLabels]}
             </Badge>
+            {lead.status === "cho_xac_nhan_trung" && (
+              <Badge variant="destructive">Chờ xác nhận trùng</Badge>
+            )}
           </div>
           <p>Nguồn: {lead.source}</p>
           <p>Người phụ trách: {lead.owner_full_name ?? "Chưa gán"}</p>
