@@ -39,6 +39,44 @@ export type Database = {
   }
   public: {
     Tables: {
+      login_logs: {
+        Row: {
+          created_at: string
+          email: string
+          id: number
+          ip: string | null
+          profile_id: string | null
+          success: boolean
+          user_agent: string | null
+        }
+        Insert: {
+          created_at?: string
+          email: string
+          id?: never
+          ip?: string | null
+          profile_id?: string | null
+          success: boolean
+          user_agent?: string | null
+        }
+        Update: {
+          created_at?: string
+          email?: string
+          id?: never
+          ip?: string | null
+          profile_id?: string | null
+          success?: boolean
+          user_agent?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "login_logs_profile_id_fkey"
+            columns: ["profile_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       profiles: {
         Row: {
           created_at: string
@@ -134,10 +172,12 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      check_login_lockout: { Args: { p_email: string }; Returns: boolean }
       current_user_role: {
         Args: never
         Returns: Database["public"]["Enums"]["user_role"]
       }
+      is_admin: { Args: never; Returns: boolean }
       is_admin_or_manager: { Args: never; Returns: boolean }
     }
     Enums: {

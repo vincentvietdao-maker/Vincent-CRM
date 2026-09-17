@@ -5,7 +5,6 @@ import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 
-import { createClient } from "@/lib/supabase/client";
 import { loginSchema, type LoginInput } from "@/lib/validations/auth";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -32,11 +31,16 @@ export default function LoginPage() {
 
   async function onSubmit(values: LoginInput) {
     setServerError(null);
-    const supabase = createClient();
-    const { error } = await supabase.auth.signInWithPassword(values);
 
-    if (error) {
-      setServerError("Email hoặc mật khẩu không đúng.");
+    const res = await fetch("/api/auth/login", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(values),
+    });
+
+    if (!res.ok) {
+      const data = await res.json().catch(() => null);
+      setServerError(data?.error ?? "Đăng nhập thất bại.");
       return;
     }
 
