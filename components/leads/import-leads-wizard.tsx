@@ -53,6 +53,8 @@ type ImportResult = {
   success: boolean;
   fullName: string;
   error?: string;
+  dedupKind?: string;
+  matchedLabel?: string | null;
 };
 
 export function ImportLeadsWizard() {
@@ -149,7 +151,7 @@ export function ImportLeadsWizard() {
     const out: ImportResult[] = [];
 
     for (const row of validRows) {
-      const { error } = await supabase.rpc("create_lead_manual", {
+      const { data: rpcData, error } = await supabase.rpc("create_lead_manual", {
         p_full_name: row.data.full_name,
         p_phone: row.data.phone,
         p_email: row.data.email,
@@ -164,11 +166,15 @@ export function ImportLeadsWizard() {
         p_raw_data: row.data,
       });
 
+      const rpcResult = rpcData?.[0];
+
       out.push({
         rowIndex: row.rowIndex,
         success: !error,
         fullName: row.data.full_name,
         error: error?.message,
+        dedupKind: rpcResult?.dedup_kind,
+        matchedLabel: rpcResult?.matched_label,
       });
     }
 
@@ -355,7 +361,12 @@ export function ImportLeadsWizard() {
           <CardHeader>
             <CardTitle>
               Hoàn tất: {results.filter((r) => r.success).length} thành công,{" "}
-              {results.filter((r) => !r.success).length} lỗi
+              {results.filter((r) => !r.success).length} lỗi,{" "}
+              {
+                results.filter((r) => r.dedupKind && r.dedupKind !== "khong_trung")
+                  .length
+              }{" "}
+              nghi trùng
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
@@ -366,6 +377,7 @@ export function ImportLeadsWizard() {
                     <TableHead>Dòng</TableHead>
                     <TableHead>Họ tên</TableHead>
                     <TableHead>Kết quả</TableHead>
+                    <TableHead>Trùng</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
@@ -378,6 +390,17 @@ export function ImportLeadsWizard() {
                           <Badge variant="secondary">Thành công</Badge>
                         ) : (
                           <Badge variant="destructive">{r.error}</Badge>
+                        )}
+                      </TableCell>
+                      <TableCell className="text-muted-foreground">
+                        {r.dedupKind === "trung_chac_chan" && (
+                          <Badge variant="destructive">Trùng chắc chắn</Badge>
+                        )}
+                        {r.dedupKind === "co_kha_nang_trung" && (
+                          <Badge variant="destructive">Chờ xác nhận trùng</Badge>
+                        )}
+                        {r.matchedLabel && (
+                          <div className="mt-1 text-xs">{r.matchedLabel}</div>
                         )}
                       </TableCell>
                     </TableRow>

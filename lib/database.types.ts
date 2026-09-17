@@ -496,7 +496,12 @@ export type Database = {
           p_source: string
           p_tax_code: string
         }
-        Returns: string
+        Returns: {
+          dedup_kind: string
+          dedup_reason: string
+          lead_id: string
+          matched_label: string
+        }[]
       }
       current_user_role: {
         Args: never

@@ -29,10 +29,25 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+
+type DedupInfo = {
+  leadId: string;
+  kind: string;
+  label: string | null;
+};
 
 export function CreateLeadForm() {
   const router = useRouter();
   const [serverError, setServerError] = useState<string | null>(null);
+  const [dedupInfo, setDedupInfo] = useState<DedupInfo | null>(null);
 
   const {
     register,
@@ -68,7 +83,23 @@ export function CreateLeadForm() {
       return;
     }
 
-    router.push(`/leads/${data}`);
+    const result = data?.[0];
+
+    if (!result) {
+      setServerError("Không nhận được kết quả tạo lead.");
+      return;
+    }
+
+    if (result.dedup_kind === "khong_trung") {
+      router.push(`/leads/${result.lead_id}`);
+      return;
+    }
+
+    setDedupInfo({
+      leadId: result.lead_id,
+      kind: result.dedup_kind ?? "",
+      label: result.matched_label,
+    });
   }
 
   return (
@@ -183,6 +214,44 @@ export function CreateLeadForm() {
           </Button>
         </form>
       </CardContent>
+
+      <Dialog
+        open={dedupInfo !== null}
+        onOpenChange={(open) => {
+          if (!open && dedupInfo) {
+            router.push(`/leads/${dedupInfo.leadId}`);
+          }
+        }}
+      >
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>
+              {dedupInfo?.kind === "trung_chac_chan"
+                ? "Phát hiện khách hàng đã có"
+                : "Có khả năng trùng với khách hàng khác"}
+            </DialogTitle>
+            <DialogDescription>
+              {dedupInfo?.kind === "trung_chac_chan"
+                ? "Lead mới đã được gắn vào hồ sơ khách hàng cũ và giao cho người phụ trách trước đó."
+                : "Lead được tạo ở trạng thái \"Chờ xác nhận trùng\", chưa gán người phụ trách cho đến khi có người xác nhận."}
+              {dedupInfo?.label && (
+                <span className="mt-2 block font-medium text-foreground">
+                  {dedupInfo.label}
+                </span>
+              )}
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter>
+            <Button
+              onClick={() => {
+                if (dedupInfo) router.push(`/leads/${dedupInfo.leadId}`);
+              }}
+            >
+              Đã hiểu, xem lead
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </Card>
   );
 }
