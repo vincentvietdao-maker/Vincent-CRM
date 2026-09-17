@@ -39,6 +39,44 @@ export type Database = {
   }
   public: {
     Tables: {
+      audit_logs: {
+        Row: {
+          action: string
+          actor_id: string
+          created_at: string
+          id: number
+          metadata: Json | null
+          target_id: string
+          target_table: string
+        }
+        Insert: {
+          action: string
+          actor_id: string
+          created_at?: string
+          id?: never
+          metadata?: Json | null
+          target_id: string
+          target_table: string
+        }
+        Update: {
+          action?: string
+          actor_id?: string
+          created_at?: string
+          id?: never
+          metadata?: Json | null
+          target_id?: string
+          target_table?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "audit_logs_actor_id_fkey"
+            columns: ["actor_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       companies: {
         Row: {
           address: string | null
@@ -418,6 +456,7 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      can_see_full_contact: { Args: { p_owner_id: string }; Returns: boolean }
       check_login_lockout: { Args: { p_email: string }; Returns: boolean }
       create_lead_manual: {
         Args: {
@@ -440,12 +479,67 @@ export type Database = {
         Args: never
         Returns: Database["public"]["Enums"]["user_role"]
       }
+      get_lead_detail: {
+        Args: { p_lead_id: string }
+        Returns: {
+          company_name: string
+          company_province: string
+          company_tax_code: string
+          contact_email: string
+          contact_full_name: string
+          contact_masked: boolean
+          contact_phone: string
+          created_at: string
+          danh_gia: string
+          id: string
+          kenh: string
+          note: string
+          owner_full_name: string
+          owner_id: string
+          product_interest: string
+          source: string
+        }[]
+      }
       is_admin: { Args: never; Returns: boolean }
       is_admin_or_manager: { Args: never; Returns: boolean }
+      list_leads: {
+        Args: never
+        Returns: {
+          company_name: string
+          contact_email: string
+          contact_full_name: string
+          contact_masked: boolean
+          contact_phone: string
+          created_at: string
+          danh_gia: string
+          id: string
+          kenh: string
+          owner_id: string
+          source: string
+        }[]
+      }
+      mask_email: { Args: { p_email: string }; Returns: string }
+      mask_phone: { Args: { p_phone: string }; Returns: string }
       normalize_email: { Args: { p_email: string }; Returns: string }
       normalize_phone_vn: { Args: { p_phone: string }; Returns: string }
       normalize_tax_code: { Args: { p_tax_code: string }; Returns: string }
+      reveal_contact_full: {
+        Args: { p_lead_id: string }
+        Returns: {
+          email: string
+          phone: string
+        }[]
+      }
       shares_team_with: { Args: { target_id: string }; Returns: boolean }
+      write_audit_log: {
+        Args: {
+          p_action: string
+          p_metadata: Json
+          p_target_id: string
+          p_target_table: string
+        }
+        Returns: undefined
+      }
     }
     Enums: {
       user_role: "admin" | "quan_ly" | "truong_nhom" | "sale" | "marketing"

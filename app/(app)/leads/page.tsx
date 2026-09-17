@@ -17,12 +17,7 @@ import {
 export default async function LeadsPage() {
   const supabase = await createClient();
 
-  const { data: leads } = await supabase
-    .from("leads")
-    .select(
-      "id, kenh, danh_gia, source, created_at, contacts(full_name, phone, email), companies(name)",
-    )
-    .order("created_at", { ascending: false });
+  const { data: leads } = await supabase.rpc("list_leads");
 
   return (
     <div className="space-y-4">
@@ -56,13 +51,13 @@ export default async function LeadsPage() {
             <TableRow key={lead.id}>
               <TableCell>
                 <Link href={`/leads/${lead.id}`} className="hover:underline">
-                  {lead.contacts?.full_name}
+                  {lead.contact_full_name}
                 </Link>
               </TableCell>
               <TableCell>
-                {lead.contacts?.phone || lead.contacts?.email || "—"}
+                {lead.contact_phone || lead.contact_email || "—"}
               </TableCell>
-              <TableCell>{lead.companies?.name ?? "—"}</TableCell>
+              <TableCell>{lead.company_name ?? "—"}</TableCell>
               <TableCell>{kenhLabels[lead.kenh as keyof typeof kenhLabels]}</TableCell>
               <TableCell>
                 <Badge variant="secondary">

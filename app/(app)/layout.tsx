@@ -38,6 +38,11 @@ export default async function AppLayout({
               Quản trị
             </Link>
           )}
+          {(profile?.role === "admin" || profile?.role === "quan_ly") && (
+            <Link href="/audit-logs" className="hover:underline">
+              Nhật ký
+            </Link>
+          )}
           <span>
             {profile?.full_name ?? user.email} · {profile?.role ?? ""}
           </span>

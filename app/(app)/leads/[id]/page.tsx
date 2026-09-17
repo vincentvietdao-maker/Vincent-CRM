@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { ContactInfo } from "@/components/leads/contact-info";
 import { kenhLabels } from "@/lib/validations/admin";
 import { danhGiaLabels } from "@/lib/validations/leads";
 
@@ -12,13 +13,8 @@ export default async function LeadDetailPage({
   const { id } = await params;
   const supabase = await createClient();
 
-  const { data: lead } = await supabase
-    .from("leads")
-    .select(
-      "id, kenh, danh_gia, source, note, product_interest, created_at, contacts(full_name, phone, email), companies(name, tax_code, province), profiles!leads_owner_id_fkey(full_name)",
-    )
-    .eq("id", id)
-    .maybeSingle();
+  const { data } = await supabase.rpc("get_lead_detail", { p_lead_id: id });
+  const lead = data?.[0];
 
   if (!lead) {
     notFound();
@@ -26,19 +22,23 @@ export default async function LeadDetailPage({
 
   return (
     <div className="max-w-2xl space-y-4">
-      <h1 className="text-xl font-semibold">{lead.contacts?.full_name}</h1>
+      <h1 className="text-xl font-semibold">{lead.contact_full_name}</h1>
 
       <Card>
         <CardHeader>
           <CardTitle className="text-base">Thông tin liên hệ</CardTitle>
         </CardHeader>
         <CardContent className="space-y-1 text-sm">
-          <p>SĐT: {lead.contacts?.phone ?? "—"}</p>
-          <p>Email: {lead.contacts?.email ?? "—"}</p>
-          <p>Công ty: {lead.companies?.name ?? "—"}</p>
-          {lead.companies?.tax_code && <p>MST: {lead.companies.tax_code}</p>}
-          {lead.companies?.province && (
-            <p>Tỉnh/thành: {lead.companies.province}</p>
+          <ContactInfo
+            leadId={lead.id}
+            initialPhone={lead.contact_phone}
+            initialEmail={lead.contact_email}
+            masked={lead.contact_masked ?? false}
+          />
+          <p>Công ty: {lead.company_name ?? "—"}</p>
+          {lead.company_tax_code && <p>MST: {lead.company_tax_code}</p>}
+          {lead.company_province && (
+            <p>Tỉnh/thành: {lead.company_province}</p>
           )}
         </CardContent>
       </Card>
@@ -57,7 +57,7 @@ export default async function LeadDetailPage({
             </Badge>
           </div>
           <p>Nguồn: {lead.source}</p>
-          <p>Người phụ trách: {lead.profiles?.full_name ?? "Chưa gán"}</p>
+          <p>Người phụ trách: {lead.owner_full_name ?? "Chưa gán"}</p>
           {lead.product_interest && (
             <p>Sản phẩm quan tâm: {lead.product_interest}</p>
           )}
