@@ -419,6 +419,23 @@ export type Database = {
     }
     Functions: {
       check_login_lockout: { Args: { p_email: string }; Returns: boolean }
+      create_lead_manual: {
+        Args: {
+          p_company_name: string
+          p_danh_gia: string
+          p_email: string
+          p_full_name: string
+          p_kenh: string
+          p_note: string
+          p_phone: string
+          p_product_interest: string
+          p_province: string
+          p_raw_data: Json
+          p_source: string
+          p_tax_code: string
+        }
+        Returns: string
+      }
       current_user_role: {
         Args: never
         Returns: Database["public"]["Enums"]["user_role"]

@@ -30,6 +30,9 @@ export default async function AppLayout({
       <header className="flex items-center justify-between border-b px-4 py-3">
         <span className="font-semibold">Sale CRM</span>
         <div className="flex items-center gap-3 text-sm">
+          <Link href="/leads" className="hover:underline">
+            Lead
+          </Link>
           {profile?.role === "admin" && (
             <Link href="/admin/users" className="hover:underline">
               Quản trị
