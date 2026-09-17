@@ -28,10 +28,17 @@ export default async function LeadsPage() {
     <div className="space-y-4">
       <div className="flex items-center justify-between">
         <h1 className="text-xl font-semibold">Lead</h1>
-        <Button
-          render={<Link href="/leads/new">Thêm lead</Link>}
-          nativeButton={false}
-        />
+        <div className="flex gap-2">
+          <Button
+            variant="outline"
+            render={<Link href="/leads/import">Import Excel</Link>}
+            nativeButton={false}
+          />
+          <Button
+            render={<Link href="/leads/new">Thêm lead</Link>}
+            nativeButton={false}
+          />
+        </div>
       </div>
 
       <Table>
